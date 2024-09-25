@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: dineshbodala/django-todo-mysql:v1
+        image: dineshbodala/django-todo-mysql:v2
         imagePullPolicy: Always  # <-- Add the imagePullPolicy here
         ports:
         - containerPort: 8000
