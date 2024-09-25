@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: dineshbodala/django-todo-mysql:latest
+        image: dineshbodala/django-todo-mysql:v1
         ports:
         - containerPort: 8000
         env:
