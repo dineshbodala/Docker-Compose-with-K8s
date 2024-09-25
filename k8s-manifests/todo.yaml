@@ -15,6 +15,7 @@ spec:
       containers:
       - name: django
         image: dineshbodala/django-todo-mysql:v1
+        imagePullPolicy: Always  # <-- Add the imagePullPolicy here
         ports:
         - containerPort: 8000
         env:
@@ -27,6 +28,7 @@ spec:
         - name: DB_PASSWORD
           value: "Dinesh123@"
         command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
 
 ---
 apiVersion: v1
