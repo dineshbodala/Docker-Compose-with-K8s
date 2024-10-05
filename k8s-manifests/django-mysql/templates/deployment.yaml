@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "django-mysql.fullname" . }}
+  labels:
+    app: {{ include "django-mysql.name" . }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}  # Number of replicas from values.yaml
+  selector:
+    matchLabels:
+      app: {{ include "django-mysql.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "django-mysql.name" . }}
+    spec:
+      serviceAccountName: {{ include "django-mysql.serviceAccountName" . }}  # Use service account from values.yaml
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # Image repo and tag from values.yaml
+        imagePullPolicy: {{ .Values.image.pullPolicy }}  # Pull policy from values.yaml
+        ports:
+        - containerPort: {{ .Values.service.port }}  # Container port from values.yaml
+        env:
+        - name: DB_HOST
+          value: "mysql"  # Example of an environment variable
+        - name: DB_NAME
+          value: "todo"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "Dinesh123@"
+        command: ["python", "manage.py", "runserver", "0.0.0.0:{{ .Values.service.port }}"]
+
+        # Liveness and readiness probes from values.yaml

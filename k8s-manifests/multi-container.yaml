@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-mysql
+  template:
+    metadata:
+      labels:
+        app: django-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_DATABASE
+          value: "todo"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "Dinesh123@"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+
+      - name: django
+        image: dineshbodala/django-todo-mysql:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DB_HOST
+          value: "localhost"  # Use localhost since Django and MySQL are in the same pod
+        - name: DB_NAME
+          value: "todo"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "Dinesh123@"
+        command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+
+---
+# PersistentVolumeClaim for MySQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard  # This uses the default GKE storage class
+
+---
+# Django Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-mysql  # This is for accessing your Django app
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30001
+  selector:
+    app: django-mysql  # This must match the label of the Django pods

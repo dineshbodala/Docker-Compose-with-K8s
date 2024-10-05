@@ -1,0 +1,85 @@
+# Default values for django-mysql.
+# Declare variables to be passed into your templates.
+
+# Number of replicas for the deployment
+replicaCount: 1
+
+# Docker image settings
+image:
+  repository: dineshbodala/django-todo-mysql
+  pullPolicy: IfNotPresent  # Policy to pull the image, default is 'IfNotPresent'
+  tag: "v2"  # Override the appVersion image tag
+
+# Image pull secrets for private registry, if needed
+imagePullSecrets: []
+  
+# Name overrides for the chart
+nameOverride: ""
+fullnameOverride: ""
+
+# Service account configuration
+serviceAccount:
+  create: true  # Creates a service account
+  automount: true  # Automatically mounts service account tokens
+  annotations: {}  # Add annotations to the service account
+  name: ""  # Name for the service account
+
+# Pod-level annotations and labels
+podAnnotations: {}  # Annotations for the pod
+podLabels: {}  # Labels for the pod
+
+# Pod security context settings
+podSecurityContext: {}
+  # fsGroup: 2000  # Set filesystem group permissions
+
+# Container security context
+securityContext: {}
+  # capabilities:
+  #   drop: 
+  #     - ALL
+  # readOnlyRootFilesystem: true  # Set the root filesystem as read-only
+  # runAsNonRoot: true  # Enforce non-root user
+  # runAsUser: 1000  # User ID for the container
+
+# Service configuration
+service:
+  type: ClusterIP  # Service type, default is ClusterIP
+  port: 8000  # Container port for Django app
+  nodePort: 30000  # NodePort (if using NodePort service type, can be omitted for ClusterIP)
+
+# Ingress configuration
+ingress:
+  enabled: false  # Ingress disabled by default
+  className: ""  # Optional ingress class name
+  annotations: {}  # Annotations for the ingress controller
+    # kubernetes.io/ingress.class: nginx  # Example annotation for nginx ingress
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local  # Default host for the ingress
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []  # TLS configuration, if needed
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# Resource requests and limits for the container
+resources: {}
+  # Uncomment and set resources limits/requests if needed:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Probes for application health checks
+livenessProbe:
+  httpGet:
+    path: /
+    port: http  # Probe endpoint port for liveness
+readinessProbe:
+  httpGet:
+    path: /
+    port: http  # Probe endpoint port for readiness

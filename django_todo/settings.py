@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'django_todo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME', 'todo'),
+        'NAME': os.environ.get('DB_NAME', 'todolist'),
         'USER': os.environ.get('DB_USER', 'root'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'Dinesh123@'),
-        'HOST': os.environ.get('DB_HOST', 'db'),  # 'db' is the hostname of the MySQL service in docker-compose
+        'HOST': os.environ.get('DB_HOST', 'localhost'),  # 'db' is the hostname of the MySQL service in docker-compose
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
